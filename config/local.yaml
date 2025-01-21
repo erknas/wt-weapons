@@ -1,0 +1,14 @@
+env: "local"
+server_config:
+  listen_addr: "localhost:3000"
+  read_timeout: 4s
+  write_timeout: 8s
+  idle_timeout: 60s
+mongo_config:
+  user: "admin"
+  password: "password123"
+  host: "localhost"
+  port: "27017"
+  db_name: "guided-weapons"
+  coll_name: "weapons"
+  auth_source: "admin"

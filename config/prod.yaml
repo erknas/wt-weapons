@@ -1,0 +1,11 @@
+env: "prod"
+server_config:
+  listen_addr: "0.0.0.0:3000"
+  read_timeout: 4s
+  write_timeout: 8s
+  idle_timeout: 60s
+mongo_config:
+  user: ""
+  password: ""
+  db_name: ""
+  coll_name: ""
