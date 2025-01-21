@@ -5,7 +5,7 @@ server_config:
   write_timeout: 8s
   idle_timeout: 60s
 mongo_config:
-  user: "admin"
+  user: "root"
   password: "password123"
   host: "localhost"
   port: "27017"
