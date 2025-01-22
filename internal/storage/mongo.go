@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/erknas/wt-weapons/internal/config"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -14,10 +13,7 @@ type Storage struct {
 	coll *mongo.Collection
 }
 
-func New(cfg *config.Config) (*Storage, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func New(ctx context.Context, cfg *config.Config) (*Storage, error) {
 	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?authSource=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.AuthSource)
 
 	client, err := mongo.Connect(options.Client().ApplyURI(uri))
@@ -32,4 +28,8 @@ func New(cfg *config.Config) (*Storage, error) {
 	coll := client.Database(cfg.DBName).Collection(cfg.CollName)
 
 	return &Storage{coll: coll}, nil
+}
+
+func (s *Storage) Close(ctx context.Context) error {
+	return s.coll.Database().Client().Disconnect(ctx)
 }
