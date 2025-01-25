@@ -2,7 +2,7 @@ package config
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	ListenAddr   string        `yaml:"listen_addr"`
+	Addr         string        `yaml:"addr"`
 	ReadTimeout  time.Duration `yaml:"read_timeout"`
 	WriteTimeout time.Duration `yaml:"write_timeout"`
 	IdleTimeout  time.Duration `yaml:"idle_timeout"`
@@ -32,19 +32,19 @@ type MongoConfig struct {
 	AuthSource string `yaml:"auth_source"`
 }
 
-func Load() (*Config, error) {
+func Load() *Config {
 	configPath := flag.String("config", "", "path to the config file")
 	flag.Parse()
 
 	if _, err := os.Stat(*configPath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("config path is not set")
+		log.Fatal("config path is not set")
 	}
 
 	cfg := new(Config)
 
 	if err := cleanenv.ReadConfig(*configPath, cfg); err != nil {
-		return nil, fmt.Errorf("failed to read config file: %s", err)
+		log.Fatal("failed to read config")
 	}
 
-	return cfg, nil
+	return cfg
 }
