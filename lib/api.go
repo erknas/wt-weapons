@@ -1,16 +1,21 @@
 package lib
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
-type APIFunc func(w http.ResponseWriter, r *http.Request) error
+type APIFunc func(ctx context.Context, w http.ResponseWriter, r *http.Request) error
 
 func MakeHTTPFunc(fn APIFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if err := fn(w, r); err != nil {
-			WriteJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error()})
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+
+		if err := fn(ctx, w, r); err != nil {
+			WriteJSON(w, http.StatusInternalServerError, map[string]any{"error": err.Error()})
 		}
 	}
 }
